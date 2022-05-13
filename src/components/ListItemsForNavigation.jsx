@@ -12,37 +12,47 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Simulating a list of items to render.
-// This can be passed through props as well. The constant is declared here for convenience
-const itemsList = Array(10).fill({
-	/** Add the properties you consider, there are no specific requirements related to what you have to render. Be creative :) */
-});
-
 export function ListItemsForNavigation(props) {
-	const [
-		selectedIndex,
-		setSelectedIndex,
-	] = useState(/** Initialize the state as you need */);
-	const activeItemRef = useRef();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const activeItemRef = useRef();
 
-	useEffect(
-		function () {
-			// Focus the item using this effect
-		},
-		[
-			/* Use accordingly the dependencies */
-		]
-	);
+  useEffect(
+    function () {
+      activeItemRef.current.focus();
+    },
+    [selectedIndex]
+  );
 
-	function handleKeyDown(event) {
-		// Add the proper logic to calculate the index that correspond to the item that should be focused.
-	}
+  function handleKeyDown(event) {
+    // Add the proper logic to calculate the index that correspond to the item that should be focused.
+    if (
+      selectedIndex < props.itemList.length - 1 &&
+      (event.key === "ArrowDown" || event.key === "ArrowLeft")
+    ) {
+      setSelectedIndex((prevIndex) => prevIndex + 1);
+    }
+    if (
+      selectedIndex > 0 &&
+      (event.key === "ArrowUp" || event.key === "ArrowRight")
+    ) {
+      setSelectedIndex((prevIndex) => prevIndex - 1);
+    }
+  }
 
-	return (
-		<ul onKeyDown={handleKeyDown}>
-			{/** Render itemsList as you wish, probably you want to render <li></li> with the proper attributes */}
-			{/** If you have issues focusing an element, it is probably because the element is not focusable originally. Try with tabIndex={0} */}
-			{/** Do not forget to pass the reference to the selected item */}
-		</ul>
-	);
+  return (
+    <ul onKeyDown={handleKeyDown} tabIndex={0}>
+      {props.itemList.map((item, index) => (
+        <li key={index} ref={activeItemRef}>
+          <input
+            ref={index === selectedIndex ? activeItemRef : null}
+            value={item.name}
+          />
+        </li>
+      ))}
+      {/** Render itemsList as you wish, probably you want to render <li></li> with the proper attributes */}
+      {/** If you have issues focusing an element, it is probably because the element is not focusable originally.
+       * Try with tabIndex={0} */}
+      {/** Do not forget to pass the reference to the selected item */}
+    </ul>
+  );
 }
