@@ -42,7 +42,7 @@ export function ListItemsForNavigation(props) {
   return (
     <ul onKeyDown={handleKeyDown} tabIndex={0}>
       {props.itemList.map((item, index) => (
-        <li key={index} ref={activeItemRef}>
+        <li key={index}>
           <input
             ref={index === selectedIndex ? activeItemRef : null}
             value={item.name}
